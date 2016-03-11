@@ -98,12 +98,14 @@ public class MongoDBReader extends Reader {
             long modCount = batchSize % pageSize;
 
             for(int i = 0; i <= pageCount; i++) {
-                skipCount += i * pageSize;
+                if(i>0) {
+                    skipCount += pageSize;
+                }
                 if(modCount == 0 && i == pageCount) {
                     break;
                 }
                 if (i == pageCount) {
-                        pageCount = modCount;
+                    pageSize = (int)modCount;
                 }
                 DBCursor dbCursor = col.find().sort(obj).skip(skipCount.intValue()).limit(pageSize);
                 while (dbCursor.hasNext()) {
